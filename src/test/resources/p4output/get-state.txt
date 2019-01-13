@@ -1,0 +1,4 @@
+Version: 50.04.05.09
+Time: Saturday, 29. Dec. 2018 20:32:11
+0 - Winterbetrieb
+3 - Heizen
