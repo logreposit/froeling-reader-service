@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.logreposit</groupId>
 	<artifactId>froeling-reader-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>dev-1-g132db00</version>
 	<name>froeling-reader-service</name>
 	<description>Demo project for Spring Boot</description>
 
