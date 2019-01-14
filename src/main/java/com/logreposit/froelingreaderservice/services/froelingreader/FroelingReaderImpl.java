@@ -2,7 +2,7 @@ package com.logreposit.froelingreaderservice.services.froelingreader;
 
 import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.FroelingClientException;
 import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.FroelingReaderException;
-import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingLogData;
+import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200LogData;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingValueAddress;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingReading;
 import com.logreposit.froelingreaderservice.utils.LoggingUtils;
@@ -32,7 +32,7 @@ public class FroelingReaderImpl implements FroelingReader
     }
 
     @Override
-    public FroelingLogData getData() throws FroelingReaderException
+    public FroelingS3200LogData getData() throws FroelingReaderException
     {
         if (CollectionUtils.isEmpty(this.valueAddresses))
         {
@@ -40,12 +40,12 @@ public class FroelingReaderImpl implements FroelingReader
         }
 
         List<FroelingReading> readings        = this.retrieveReadings();
-        FroelingLogData       froelingLogData = new FroelingLogData();
+        FroelingS3200LogData froelingS3200LogData = new FroelingS3200LogData();
 
-        froelingLogData.setDate(new Date());
-        froelingLogData.setReadings(readings);
+        froelingS3200LogData.setDate(new Date());
+        froelingS3200LogData.setReadings(readings);
 
-        return froelingLogData;
+        return froelingS3200LogData;
     }
 
     private List<FroelingReading> retrieveReadings() throws FroelingReaderException

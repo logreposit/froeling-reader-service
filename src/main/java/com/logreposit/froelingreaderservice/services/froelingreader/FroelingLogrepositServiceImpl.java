@@ -1,6 +1,6 @@
 package com.logreposit.froelingreaderservice.services.froelingreader;
 
-import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingLogData;
+import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200LogData;
 import com.logreposit.froelingreaderservice.utils.LoggingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class FroelingLogrepositServiceImpl implements FroelingLogrepositService
     {
         try
         {
-            FroelingLogData froelingLogData = this.froelingReader.getData();
+            FroelingS3200LogData froelingS3200LogData = this.froelingReader.getData();
 
             // TODO: first implement stuff in API
 

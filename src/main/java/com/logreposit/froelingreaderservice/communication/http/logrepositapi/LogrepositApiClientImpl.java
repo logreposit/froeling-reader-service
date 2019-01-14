@@ -5,7 +5,7 @@ import com.logreposit.froelingreaderservice.communication.http.common.ResponseEr
 import com.logreposit.froelingreaderservice.communication.http.logrepositapi.dtos.request.DeviceType;
 import com.logreposit.froelingreaderservice.communication.http.logrepositapi.dtos.request.LogIngressRequestDto;
 import com.logreposit.froelingreaderservice.configuration.ApplicationConfiguration;
-import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingLogData;
+import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200LogData;
 import com.logreposit.froelingreaderservice.utils.LoggingUtils;
 import com.logreposit.froelingreaderservice.utils.RetryTemplateFactory;
 import org.slf4j.Logger;
@@ -49,12 +49,12 @@ public class LogrepositApiClientImpl implements LogrepositApiClient
     }
 
     @Override
-    public void publishData(FroelingLogData froelingLogData) throws LogrepositApiClientException
+    public void publishData(FroelingS3200LogData froelingS3200LogData) throws LogrepositApiClientException
     {
         try
         {
             URL                  ingressUrl           = new URL(this.getApiBaseUrl(), "ingress");
-            LogIngressRequestDto logIngressRequestDto = new LogIngressRequestDto(DeviceType.FROELING_LAMBDATRONIC_S3200, froelingLogData);
+            LogIngressRequestDto logIngressRequestDto = new LogIngressRequestDto(DeviceType.FROELING_LAMBDATRONIC_S3200, froelingS3200LogData);
             String               payload              = this.objectMapper.writeValueAsString(logIngressRequestDto);
             String               response             = this.requestWithRetries(ingressUrl.toString(), HttpMethod.POST, payload);
 

@@ -1,9 +1,9 @@
 package com.logreposit.froelingreaderservice.services.froelingreader;
 
 import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.FroelingReaderException;
-import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingLogData;
+import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200LogData;
 
 public interface FroelingReader
 {
-    FroelingLogData getData() throws FroelingReaderException;
+    FroelingS3200LogData getData() throws FroelingReaderException;
 }

@@ -2,7 +2,7 @@ package com.logreposit.froelingreaderservice.communication.http.logrepositapi.dt
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingLogData;
+import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200LogData;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LogIngressRequestDto
@@ -11,12 +11,12 @@ public class LogIngressRequestDto
     private DeviceType deviceType;
 
     @JsonProperty(value = "data")
-    private FroelingLogData data;
+    private FroelingS3200LogData data;
 
-    public LogIngressRequestDto(DeviceType deviceType, FroelingLogData froelingLogData)
+    public LogIngressRequestDto(DeviceType deviceType, FroelingS3200LogData froelingS3200LogData)
     {
         this.deviceType = deviceType;
-        this.data       = froelingLogData;
+        this.data       = froelingS3200LogData;
     }
 
     public DeviceType getDeviceType()
@@ -29,12 +29,12 @@ public class LogIngressRequestDto
         this.deviceType = deviceType;
     }
 
-    public FroelingLogData getData()
+    public FroelingS3200LogData getData()
     {
         return this.data;
     }
 
-    public void setData(FroelingLogData data)
+    public void setData(FroelingS3200LogData data)
     {
         this.data = data;
     }

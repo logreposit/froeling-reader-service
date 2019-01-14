@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class FroelingLogData
+public class FroelingS3200LogData
 {
     private Date                  date;
     private List<FroelingReading> readings;
 
-    public FroelingLogData()
+    public FroelingS3200LogData()
     {
         this.readings = new ArrayList<>();
     }
