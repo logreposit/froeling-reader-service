@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,13 +80,17 @@ public class FroelingReaderImpl implements FroelingReader
 
     private FroelingReading retrieveReading(FroelingValueAddress froelingValueAddress) throws FroelingReaderException
     {
-        int     value   = this.retrieveFroelingValue(froelingValueAddress.getAddress(), froelingValueAddress.getMultiplier());
+        int             value   = this.retrieveFroelingValue(froelingValueAddress.getAddress(), froelingValueAddress.getMultiplier());
         FroelingReading reading = new FroelingReading();
 
         reading.setAddress(froelingValueAddress.getAddress());
         reading.setValue(value);
-        reading.setUnit(froelingValueAddress.getUnit());
         reading.setDescription(froelingValueAddress.getDescription());
+
+        if (!StringUtils.isEmpty(froelingValueAddress.getUnit()))
+        {
+            reading.setUnit(froelingValueAddress.getUnit());
+        }
 
         return reading;
     }
