@@ -12,10 +12,10 @@ RUN cd /usr/src && \
     make install && \
     make inst-sysv-init
 
-ADD run.sh /opt/logreposit/froeling-reader-service/run.sh
-RUN chmod +x /opt/logreposit/froeling-reader-service/run.sh
-ADD app.jar /opt/logreposit/froeling-reader-service/app.jar
-
 WORKDIR /opt/logreposit/froeling-reader-service
+
+COPY run.sh    /opt/logreposit/froeling-reader-service/run.sh
+COPY app.jar   /opt/logreposit/froeling-reader-service/app.jar
+RUN  chmod 755 /opt/logreposit/froeling-reader-service/run.sh
 
 ENTRYPOINT ["/opt/logreposit/froeling-reader-service/run.sh"]
