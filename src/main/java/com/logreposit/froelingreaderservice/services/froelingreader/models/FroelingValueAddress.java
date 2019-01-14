@@ -11,11 +11,11 @@ public class FroelingValueAddress
 
     public FroelingValueAddress(Integer number, String address, Integer multiplier, String unit, String other, String description)
     {
-        this.number = number;
-        this.address = address;
-        this.multiplier = multiplier;
-        this.unit = unit;
-        this.other = other;
+        this.number      = number;
+        this.address     = address;
+        this.multiplier  = multiplier;
+        this.unit        = unit;
+        this.other       = other;
         this.description = description;
     }
 

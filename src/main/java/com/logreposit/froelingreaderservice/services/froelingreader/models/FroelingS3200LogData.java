@@ -6,8 +6,8 @@ import java.util.List;
 
 public class FroelingS3200LogData
 {
-    private Date                  date;
-    private List<FroelingReading> readings;
+    private Date                       date;
+    private List<FroelingS3200Reading> readings;
 
     public FroelingS3200LogData()
     {
@@ -24,12 +24,12 @@ public class FroelingS3200LogData
         this.date = date;
     }
 
-    public List<FroelingReading> getReadings()
+    public List<FroelingS3200Reading> getReadings()
     {
         return this.readings;
     }
 
-    public void setReadings(List<FroelingReading> readings)
+    public void setReadings(List<FroelingS3200Reading> readings)
     {
         this.readings = readings;
     }

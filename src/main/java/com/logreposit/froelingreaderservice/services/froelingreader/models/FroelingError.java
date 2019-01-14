@@ -12,11 +12,11 @@ public class FroelingError
 
     public FroelingError(Date date, Integer numberOne, Integer numberTwo, String description, String state)
     {
-        this.date = date;
-        this.numberOne = numberOne;
-        this.numberTwo = numberTwo;
+        this.date        = date;
+        this.numberOne   = numberOne;
+        this.numberTwo   = numberTwo;
         this.description = description;
-        this.state = state;
+        this.state       = state;
     }
 
     public Date getDate()

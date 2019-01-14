@@ -12,7 +12,7 @@ public class FroelingState
     public FroelingState(String version, Date date, Map<Integer, String> details)
     {
         this.version = version;
-        this.date = date;
+        this.date    = date;
         this.details = details;
     }
 

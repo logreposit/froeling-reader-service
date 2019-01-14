@@ -4,7 +4,7 @@ import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.F
 import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.FroelingReaderException;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200LogData;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingValueAddress;
-import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingReading;
+import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200Reading;
 import com.logreposit.froelingreaderservice.utils.LoggingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class FroelingReaderImpl implements FroelingReader
             this.retrieveValueAddresses();
         }
 
-        List<FroelingReading> readings        = this.retrieveReadings();
+        List<FroelingS3200Reading> readings        = this.retrieveReadings();
         FroelingS3200LogData froelingS3200LogData = new FroelingS3200LogData();
 
         froelingS3200LogData.setDate(new Date());
@@ -48,13 +48,13 @@ public class FroelingReaderImpl implements FroelingReader
         return froelingS3200LogData;
     }
 
-    private List<FroelingReading> retrieveReadings() throws FroelingReaderException
+    private List<FroelingS3200Reading> retrieveReadings() throws FroelingReaderException
     {
-        List<FroelingReading> readings = new ArrayList<>();
+        List<FroelingS3200Reading> readings = new ArrayList<>();
 
         for (FroelingValueAddress froelingValueAddress : this.valueAddresses)
         {
-            FroelingReading reading = this.retrieveReading(froelingValueAddress);
+            FroelingS3200Reading reading = this.retrieveReading(froelingValueAddress);
 
             readings.add(reading);
         }
@@ -78,10 +78,10 @@ public class FroelingReaderImpl implements FroelingReader
         }
     }
 
-    private FroelingReading retrieveReading(FroelingValueAddress froelingValueAddress) throws FroelingReaderException
+    private FroelingS3200Reading retrieveReading(FroelingValueAddress froelingValueAddress) throws FroelingReaderException
     {
         int             value   = this.retrieveFroelingValue(froelingValueAddress.getAddress(), froelingValueAddress.getMultiplier());
-        FroelingReading reading = new FroelingReading();
+        FroelingS3200Reading reading = new FroelingS3200Reading();
 
         reading.setAddress(froelingValueAddress.getAddress());
         reading.setValue(value);

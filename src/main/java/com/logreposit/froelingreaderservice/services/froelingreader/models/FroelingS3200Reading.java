@@ -1,6 +1,6 @@
 package com.logreposit.froelingreaderservice.services.froelingreader.models;
 
-public class FroelingReading
+public class FroelingS3200Reading
 {
     private String address;
     private int    value;
