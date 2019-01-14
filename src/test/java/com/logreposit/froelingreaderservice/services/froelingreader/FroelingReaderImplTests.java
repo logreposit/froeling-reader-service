@@ -57,7 +57,7 @@ public class FroelingReaderImplTests
         Assert.assertEquals(2, froelingS3200LogData.getReadings().size());
         Assert.assertEquals("0x000", froelingS3200LogData.getReadings().get(0).getAddress());
         Assert.assertEquals("Descr1", froelingS3200LogData.getReadings().get(0).getDescription());
-        Assert.assertEquals("", froelingS3200LogData.getReadings().get(0).getUnit());
+        Assert.assertNull(froelingS3200LogData.getReadings().get(0).getUnit());
         Assert.assertEquals(150, froelingS3200LogData.getReadings().get(0).getValue());
         Assert.assertEquals("0x010", froelingS3200LogData.getReadings().get(1).getAddress());
         Assert.assertEquals("Descr2", froelingS3200LogData.getReadings().get(1).getDescription());
