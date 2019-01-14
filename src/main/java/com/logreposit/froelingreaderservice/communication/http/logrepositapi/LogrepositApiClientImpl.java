@@ -25,7 +25,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-// TODO DoM
 @Service
 public class LogrepositApiClientImpl implements LogrepositApiClient
 {
