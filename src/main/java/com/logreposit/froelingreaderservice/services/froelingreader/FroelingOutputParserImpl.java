@@ -4,6 +4,7 @@ import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.F
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingError;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingState;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingValueAddress;
+import com.logreposit.froelingreaderservice.utils.LoggingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -110,6 +111,8 @@ public class FroelingOutputParserImpl implements FroelingOutputParser
         List<FroelingValueAddress> froelingValueAddressesSorted = new ArrayList<>(froelingValueAddresses);
 
         froelingValueAddressesSorted.sort(Comparator.comparing(FroelingValueAddress::getAddress));
+
+        logger.info("Successfully parsed and sorted value addresses: {}", LoggingUtils.serialize(froelingValueAddressesSorted));
 
         return froelingValueAddressesSorted;
     }
