@@ -133,10 +133,11 @@ public class FroelingClientImpl implements FroelingClient
 
             if (commandResult.getExitStatus() != 0)
             {
-                logger.error("Command {} exited with exit status {}, stderr: {}",
+                logger.error("Command {} exited with exit status {}, stderr: {}, stdout: {}",
                         String.join(" ", commandParts),
                         commandResult.getExitStatus(),
-                        commandResult.getStderr()
+                        commandResult.getStderr(),
+                        commandResult.getStdout()
                 );
 
                 throw new FroelingClientException("Command exited with status != 0");
