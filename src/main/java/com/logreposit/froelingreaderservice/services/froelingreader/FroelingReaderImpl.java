@@ -39,7 +39,7 @@ public class FroelingReaderImpl implements FroelingReader
             this.retrieveValueAddresses();
         }
 
-        List<FroelingS3200Reading> readings        = this.retrieveReadings();
+        List<FroelingS3200Reading> readings       = this.retrieveReadings();
         FroelingS3200LogData froelingS3200LogData = new FroelingS3200LogData();
 
         froelingS3200LogData.setDate(new Date());

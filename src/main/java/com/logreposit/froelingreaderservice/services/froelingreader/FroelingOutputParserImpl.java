@@ -11,11 +11,15 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,7 +91,7 @@ public class FroelingOutputParserImpl implements FroelingOutputParser
     {
         String[] lines = stdout.split("\\r?\\n");
 
-        List<FroelingValueAddress> froelingValueAddresses = new ArrayList<>();
+        Set<FroelingValueAddress> froelingValueAddresses = new HashSet<>();
 
         for (String line : lines)
         {
@@ -103,7 +107,11 @@ public class FroelingOutputParserImpl implements FroelingOutputParser
             throw new FroelingOutputParserException("Unable to parse value addresses.");
         }
 
-        return froelingValueAddresses;
+        List<FroelingValueAddress> froelingValueAddressesSorted = new ArrayList<>(froelingValueAddresses);
+
+        froelingValueAddressesSorted.sort(Comparator.comparing(FroelingValueAddress::getAddress));
+
+        return froelingValueAddressesSorted;
     }
 
     @Override

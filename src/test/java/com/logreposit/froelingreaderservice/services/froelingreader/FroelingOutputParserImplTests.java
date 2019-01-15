@@ -16,7 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 public class FroelingOutputParserImplTests
@@ -95,14 +97,14 @@ public class FroelingOutputParserImplTests
         List<FroelingValueAddress> froelingValueAddresses = this.froelingOutputParser.parseValueAddresses(valuesResponse);
 
         Assert.assertNotNull(froelingValueAddresses);
-        Assert.assertEquals(231, froelingValueAddresses.size());
+        Assert.assertEquals(185, froelingValueAddresses.size());
 
         compareValueAddress(froelingValueAddresses.get(0), 0, "0x0000", 2, null, "0002", "Kesseltemperatur");
         compareValueAddress(froelingValueAddresses.get(1), 1, "0x0001", 1, null, "0003", "Abgastemperatur");
-        compareValueAddress(froelingValueAddresses.get(2), 2, "0x0013", 1, null, "0003", "Abgas-Solltemperatur");
-        compareValueAddress(froelingValueAddresses.get(3), 3, "0x0012", 1, "%", "0001", "Kesselstellgröße");
-        compareValueAddress(froelingValueAddresses.get(4), 4, "0x000f", 1, "%", "0001", "Saugzug - Ansteuerung");
-        compareValueAddress(froelingValueAddresses.get(5), 5, "0x0007", 1, "U", "0030", "Saugzugdrehzahl");
+        compareValueAddress(froelingValueAddresses.get(2), 64, "0x0002", 2, null, "0002", "Boardtemperatur");
+        compareValueAddress(froelingValueAddresses.get(3), 8, "0x0003", 10, "%", "0002", "Restsauerstoffgehalt");
+        compareValueAddress(froelingValueAddresses.get(4), 119, "0x0004", 2, null, "0002", "Außentemperatur");
+        compareValueAddress(froelingValueAddresses.get(5), 7, "0x0005", 1, "%", "0001", "Position der Primärluftklappe");
     }
 
     @Test
