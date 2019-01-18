@@ -206,7 +206,7 @@ public class FroelingClientImplTests
 
         int retrievedValue = this.froelingClient.getValue("0x000", 2);
 
-        Assert.assertEquals(value * 2, retrievedValue);
+        Assert.assertEquals(value / 2, retrievedValue);
 
         Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
 
