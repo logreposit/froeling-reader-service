@@ -104,12 +104,12 @@ public class FroelingClientImpl implements FroelingClient
             int retrievedValue = this.froelingOutputParser.parseValue(stdout);
             int value          = 0;
 
-            if (multiplier != null)
+            if (multiplier != null && multiplier != 0)
             {
-                value = retrievedValue * multiplier;
+                value = retrievedValue / multiplier;
             }
 
-            logger.info("Address {} -> value * multiplier -> {} * {} => {}", address, retrievedValue, multiplier, value);
+            logger.info("Address {} -> value / multiplier -> {} / {} => {}", address, retrievedValue, multiplier, value);
 
             return value;
         }
