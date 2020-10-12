@@ -3,7 +3,16 @@ FROM openjdk:11-jre
 MAINTAINER Dominic Miglar <dominic.miglar@netunix.at>
 
 RUN apt-get -y update && \
-    apt-get -y install git default-libmysqlclient-dev build-essential libssl-dev libxml2-dev libcurl4-openssl-dev uuid-dev libjansson-dev
+    apt-get -y install \
+      git \
+      default-libmysqlclient-dev \
+      build-essential \
+      libssl-dev \
+      libxml2-dev \
+      libcurl4-openssl-dev \
+      uuid-dev \
+      libjansson-dev \
+      libwebsockets-dev
 
 RUN cd /usr/src && \
     git clone https://github.com/horchi/linux-p4d/ && \
