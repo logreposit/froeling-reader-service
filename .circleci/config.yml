@@ -10,6 +10,7 @@ executors:
   build-container:
     environment:
       _JAVA_OPTIONS: "-Xmx512m"
+      TZ: "Europe/Vienna"
     docker:
       - image: cimg/openjdk:11.0
 
