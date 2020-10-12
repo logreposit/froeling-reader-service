@@ -13,5 +13,5 @@ Description of service, API Documentation and setup along with maintenance instr
 
 Special tanks to [@horchi](https://github.com/horchi) for the awesome [linux-p4d](https://github.com/horchi/linux-p4d) project.
 
-I am using his `p4d` command-line tool for getting the data from the Lambdatronic S3200 controller.
+I am using his `p4` command-line tool for getting the data from the Lambdatronic S3200 controller.
 
