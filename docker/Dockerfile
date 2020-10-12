@@ -7,6 +7,7 @@ RUN apt-get -y update && \
 
 RUN cd /usr/src && \
     git clone https://github.com/horchi/linux-p4d/ && \
+    git checkout 0.5.16 && \
     cd linux-p4d && \
     make clean all && \
     make install && \
