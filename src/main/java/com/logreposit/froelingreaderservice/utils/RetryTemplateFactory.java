@@ -31,25 +31,4 @@ public class RetryTemplateFactory
 
         return retryTemplate;
     }
-
-    public static RetryTemplate getRetryTemplateWithExponentialBackOffForGivenException(int maxAttempts,
-                                                                                        long initialBackOffInterval,
-                                                                                        double backOffMultiplier,
-                                                                                        List<Class<? extends Throwable>> retryableExceptions)
-    {
-        Map<Class<? extends Throwable>, Boolean> retryableExceptionsAsMap = new HashMap<>();
-        retryableExceptions.forEach(exception -> retryableExceptionsAsMap.put(exception, true));
-
-        SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy(maxAttempts, retryableExceptionsAsMap);
-
-        ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
-        exponentialBackOffPolicy.setInitialInterval(initialBackOffInterval);
-        exponentialBackOffPolicy.setMultiplier(backOffMultiplier);
-
-        RetryTemplate retryTemplate = new RetryTemplate();
-        retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
-        retryTemplate.setRetryPolicy(simpleRetryPolicy);
-
-        return retryTemplate;
-    }
 }
