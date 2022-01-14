@@ -8,25 +8,26 @@ import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.F
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingError;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingState;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingValueAddress;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-@RunWith(SpringRunner.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ExtendWith(MockitoExtension.class)
 public class FroelingClientImplTests
 {
     private FroelingClient froelingClient;
@@ -40,7 +41,7 @@ public class FroelingClientImplTests
     @Captor
     private ArgumentCaptor<List<String>> commandArgumentCaptor;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         this.froelingClient = new FroelingClientImpl(this.commandExecutor, this.froelingOutputParser);
@@ -60,17 +61,15 @@ public class FroelingClientImplTests
 
         FroelingState retrievedState = this.froelingClient.getState();
 
-        Assert.assertSame(froelingState, retrievedState);
+        assertThat(retrievedState).isSameAs(froelingState);
 
         Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedCommandParts);
-        Assert.assertFalse(capturedCommandParts.isEmpty());
-        Assert.assertEquals(2, capturedCommandParts.size());
-        Assert.assertEquals("p4", capturedCommandParts.get(0));
-        Assert.assertEquals("state", capturedCommandParts.get(1));
+        assertThat(capturedCommandParts).hasSize(2);
+        assertThat(capturedCommandParts.get(0)).isEqualTo("p4");
+        assertThat(capturedCommandParts.get(1)).isEqualTo("state");
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -78,8 +77,8 @@ public class FroelingClientImplTests
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedStdout);
-        Assert.assertSame(stdout, capturedStdout);
+        assertThat(capturedStdout).isNotNull();
+        assertThat(capturedStdout).isSameAs(stdout);
     }
 
     @Test
@@ -96,17 +95,15 @@ public class FroelingClientImplTests
 
         List<FroelingError> retrievedErrors = this.froelingClient.getErrors();
 
-        Assert.assertSame(froelingErrors, retrievedErrors);
+        assertThat(retrievedErrors).isSameAs(froelingErrors);
 
         Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedCommandParts);
-        Assert.assertFalse(capturedCommandParts.isEmpty());
-        Assert.assertEquals(2, capturedCommandParts.size());
-        Assert.assertEquals("p4", capturedCommandParts.get(0));
-        Assert.assertEquals("errors", capturedCommandParts.get(1));
+        assertThat(capturedCommandParts).hasSize(2);
+        assertThat(capturedCommandParts.get(0)).isEqualTo("p4");
+        assertThat(capturedCommandParts.get(0)).isEqualTo("errors");
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -114,8 +111,8 @@ public class FroelingClientImplTests
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedStdout);
-        Assert.assertSame(stdout, capturedStdout);
+        assertThat(capturedStdout).isNotNull();
+        assertThat(capturedStdout).isEqualTo(stdout);
     }
 
     @Test
@@ -132,17 +129,15 @@ public class FroelingClientImplTests
 
         List<FroelingValueAddress> retrievedValueAddresses = this.froelingClient.getValueAddresses();
 
-        Assert.assertSame(froelingValueAddresses, retrievedValueAddresses);
+        assertThat(retrievedValueAddresses).isSameAs(froelingValueAddresses);
 
         Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedCommandParts);
-        Assert.assertFalse(capturedCommandParts.isEmpty());
-        Assert.assertEquals(2, capturedCommandParts.size());
-        Assert.assertEquals("p4", capturedCommandParts.get(0));
-        Assert.assertEquals("values", capturedCommandParts.get(1));
+        assertThat(capturedCommandParts).hasSize(2);
+        assertThat(capturedCommandParts.get(0)).isEqualTo("p4");
+        assertThat(capturedCommandParts.get(0)).isEqualTo("values");
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -150,8 +145,8 @@ public class FroelingClientImplTests
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedStdout);
-        Assert.assertSame(stdout, capturedStdout);
+        assertThat(capturedStdout).isNotNull();
+        assertThat(capturedStdout).isSameAs(stdout);
     }
 
     @Test
@@ -168,19 +163,17 @@ public class FroelingClientImplTests
 
         int retrievedValue = this.froelingClient.getValue("0x000", 1);
 
-        Assert.assertSame(value, retrievedValue);
+        assertThat(retrievedValue).isSameAs(value);
 
         Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedCommandParts);
-        Assert.assertFalse(capturedCommandParts.isEmpty());
-        Assert.assertEquals(4, capturedCommandParts.size());
-        Assert.assertEquals("p4", capturedCommandParts.get(0));
-        Assert.assertEquals("getv", capturedCommandParts.get(1));
-        Assert.assertEquals("-a", capturedCommandParts.get(2));
-        Assert.assertEquals("0x000", capturedCommandParts.get(3));
+        assertThat(capturedCommandParts).hasSize(4);
+        assertThat(capturedCommandParts.get(0)).isEqualTo("p4");
+        assertThat(capturedCommandParts.get(1)).isEqualTo("getv");
+        assertThat(capturedCommandParts.get(2)).isEqualTo("-a");
+        assertThat(capturedCommandParts.get(3)).isEqualTo("0x000");
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -188,8 +181,8 @@ public class FroelingClientImplTests
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedStdout);
-        Assert.assertSame(stdout, capturedStdout);
+        assertThat(capturedStdout).isNotNull();
+        assertThat(capturedStdout).isSameAs(stdout);
     }
 
     @Test
@@ -206,19 +199,17 @@ public class FroelingClientImplTests
 
         int retrievedValue = this.froelingClient.getValue("0x000", 2);
 
-        Assert.assertEquals(value / 2, retrievedValue);
+        assertThat(retrievedValue).isEqualTo(value / 2);
 
         Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedCommandParts);
-        Assert.assertFalse(capturedCommandParts.isEmpty());
-        Assert.assertEquals(4, capturedCommandParts.size());
-        Assert.assertEquals("p4", capturedCommandParts.get(0));
-        Assert.assertEquals("getv", capturedCommandParts.get(1));
-        Assert.assertEquals("-a", capturedCommandParts.get(2));
-        Assert.assertEquals("0x000", capturedCommandParts.get(3));
+        assertThat(capturedCommandParts).hasSize(4);
+        assertThat(capturedCommandParts.get(0)).isEqualTo("p4");
+        assertThat(capturedCommandParts.get(1)).isEqualTo("getv");
+        assertThat(capturedCommandParts.get(2)).isEqualTo("-a");
+        assertThat(capturedCommandParts.get(3)).isEqualTo("0x000");
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -226,7 +217,7 @@ public class FroelingClientImplTests
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
-        Assert.assertNotNull(capturedStdout);
-        Assert.assertSame(stdout, capturedStdout);
+        assertThat(capturedStdout).isNotNull();
+        assertThat(capturedStdout).isSameAs(stdout);
     }
 }

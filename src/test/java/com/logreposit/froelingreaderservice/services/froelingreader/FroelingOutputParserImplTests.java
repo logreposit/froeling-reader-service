@@ -4,10 +4,8 @@ import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.F
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingError;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingState;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingValueAddress;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -16,16 +14,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-@RunWith(SpringRunner.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+
 public class FroelingOutputParserImplTests
 {
     private FroelingOutputParserImpl froelingOutputParser;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         this.froelingOutputParser = new FroelingOutputParserImpl();
@@ -36,16 +35,19 @@ public class FroelingOutputParserImplTests
     {
         String stateResponse = readFileFromTestResources("p4output/get-state.txt");
 
-        Assert.assertNotNull(stateResponse);
+        assertThat(stateResponse).isNotNull();
 
         FroelingState froelingState = this.froelingOutputParser.parseState(stateResponse);
 
-        Assert.assertNotNull(froelingState);
-        Assert.assertEquals("50.04.05.09", froelingState.getVersion());
-        Assert.assertEquals(1546111931000L, froelingState.getDate().getTime());
-        Assert.assertEquals(2, froelingState.getDetails().size());
-        Assert.assertEquals("Winterbetrieb", froelingState.getDetails().get(0));
-        Assert.assertEquals("Heizen", froelingState.getDetails().get(3));
+        assertThat(froelingState).isNotNull();
+
+        assertSoftly(softly -> {
+            softly.assertThat(froelingState.getVersion()).isEqualTo("50.04.05.09");
+            softly.assertThat(froelingState.getDate().getTime()).isEqualTo(1546111931000L);
+            softly.assertThat(froelingState.getDetails()).hasSize(2);
+            softly.assertThat(froelingState.getDetails().get(0)).isEqualTo("Winterbetrieb");
+            softly.assertThat(froelingState.getDetails().get(3)).isEqualTo("Heizen");
+        });
     }
 
     @Test
@@ -53,38 +55,53 @@ public class FroelingOutputParserImplTests
     {
         String errorsResponse = readFileFromTestResources("p4output/get-errors.txt");
 
-        Assert.assertNotNull(errorsResponse);
+        assertThat(errorsResponse).isNotNull();
 
         List<FroelingError> froelingErrors = this.froelingOutputParser.parseErrors(errorsResponse);
 
-        Calendar calendar = Calendar.getInstance();
+        assertThat(froelingErrors).hasSize(3);
 
-        Assert.assertNotNull(froelingErrors);
-        Assert.assertEquals(3, froelingErrors.size());
+        assertSoftly(softly -> {
+            final var calendar = Calendar.getInstance();
 
-        calendar.setTime(froelingErrors.get(0).getDate());
-        Assert.assertEquals(24, calendar.get(Calendar.DAY_OF_MONTH));
-        Assert.assertEquals(11, calendar.get(Calendar.MONTH));
-        Assert.assertEquals(1, froelingErrors.get(0).getNumberOne(), 0);
-        Assert.assertEquals(195, froelingErrors.get(0).getNumberTwo(), 0);
-        Assert.assertEquals("Kesseltemperaturfühler fehlerhaft", froelingErrors.get(0).getDescription());
-        Assert.assertEquals("gekommen", froelingErrors.get(0).getState());
+            calendar.setTime(froelingErrors.get(0).getDate());
 
-        calendar.setTime(froelingErrors.get(1).getDate());
-        Assert.assertEquals(24, calendar.get(Calendar.DAY_OF_MONTH));
-        Assert.assertEquals(11, calendar.get(Calendar.MONTH));
-        Assert.assertEquals(1, froelingErrors.get(1).getNumberOne(), 0);
-        Assert.assertEquals(67, froelingErrors.get(1).getNumberTwo(), 0);
-        Assert.assertEquals("Kesseltemperaturfühler fehlerhaft", froelingErrors.get(1).getDescription());
-        Assert.assertEquals("quittiert", froelingErrors.get(1).getState());
+            softly.assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(24);
+            softly.assertThat(calendar.get(Calendar.MONTH)).isEqualTo(11);
 
-        calendar.setTime(froelingErrors.get(2).getDate());
-        Assert.assertEquals(24, calendar.get(Calendar.DAY_OF_MONTH));
-        Assert.assertEquals(11, calendar.get(Calendar.MONTH));
-        Assert.assertEquals(1, froelingErrors.get(2).getNumberOne(), 0);
-        Assert.assertEquals(66, froelingErrors.get(2).getNumberTwo(), 0);
-        Assert.assertEquals("Kesseltemperaturfühler fehlerhaft", froelingErrors.get(2).getDescription());
-        Assert.assertEquals("gegangen", froelingErrors.get(2).getState());
+            softly.assertThat(froelingErrors.get(0).getNumberOne()).isEqualTo(1);
+            softly.assertThat(froelingErrors.get(0).getNumberTwo()).isEqualTo(195);
+            softly.assertThat(froelingErrors.get(0).getDescription()).isEqualTo("Kesseltemperaturfühler fehlerhaft");
+            softly.assertThat(froelingErrors.get(0).getState()).isEqualTo("gekommen");
+        });
+
+        assertSoftly(softly -> {
+            final var calendar = Calendar.getInstance();
+
+            calendar.setTime(froelingErrors.get(1).getDate());
+
+            softly.assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(24);
+            softly.assertThat(calendar.get(Calendar.MONTH)).isEqualTo(11);
+
+            softly.assertThat(froelingErrors.get(1).getNumberOne()).isEqualTo(1);
+            softly.assertThat(froelingErrors.get(1).getNumberTwo()).isEqualTo(67);
+            softly.assertThat(froelingErrors.get(1).getDescription()).isEqualTo("Kesseltemperaturfühler fehlerhaft");
+            softly.assertThat(froelingErrors.get(1).getState()).isEqualTo("quittiert");
+        });
+
+        assertSoftly(softly -> {
+            final var calendar = Calendar.getInstance();
+
+            calendar.setTime(froelingErrors.get(2).getDate());
+
+            softly.assertThat(calendar.get(Calendar.DAY_OF_MONTH)).isEqualTo(24);
+            softly.assertThat(calendar.get(Calendar.MONTH)).isEqualTo(11);
+
+            softly.assertThat(froelingErrors.get(2).getNumberOne()).isEqualTo(1);
+            softly.assertThat(froelingErrors.get(2).getNumberTwo()).isEqualTo(66);
+            softly.assertThat(froelingErrors.get(2).getDescription()).isEqualTo("Kesseltemperaturfühler fehlerhaft");
+            softly.assertThat(froelingErrors.get(2).getState()).isEqualTo("gegangen");
+        });
     }
 
     @Test
@@ -92,12 +109,11 @@ public class FroelingOutputParserImplTests
     {
         String valuesResponse = readFileFromTestResources("p4output/get-values.txt");
 
-        Assert.assertNotNull(valuesResponse);
+        assertThat(valuesResponse).isNotNull();
 
         List<FroelingValueAddress> froelingValueAddresses = this.froelingOutputParser.parseValueAddresses(valuesResponse);
 
-        Assert.assertNotNull(froelingValueAddresses);
-        Assert.assertEquals(185, froelingValueAddresses.size());
+        assertThat(froelingValueAddresses).hasSize(185);
 
         compareValueAddress(froelingValueAddresses.get(0), 0, "0x0000", 2, null, "0002", "Kesseltemperatur");
         compareValueAddress(froelingValueAddresses.get(1), 1, "0x0001", 1, null, "0003", "Abgastemperatur");
@@ -112,22 +128,11 @@ public class FroelingOutputParserImplTests
     {
         String valuesResponse = "";
 
-        Assert.assertNotNull(valuesResponse);
+        assertThat(valuesResponse).isNotNull();
 
-        try
-        {
-            this.froelingOutputParser.parseValueAddresses(valuesResponse);
-
-            Assert.fail("should not be here");
-        }
-        catch (FroelingOutputParserException e)
-        {
-            Assert.assertEquals("Unable to parse value addresses.", e.getMessage());
-        }
-        catch (Exception e)
-        {
-            Assert.fail("should not be here.");
-        }
+        assertThatThrownBy(() -> this.froelingOutputParser.parseValueAddresses(valuesResponse))
+                .isExactlyInstanceOf(FroelingOutputParserException.class)
+                .hasMessage("Unable to parse value addresses");
     }
 
     @Test
@@ -136,7 +141,7 @@ public class FroelingOutputParserImplTests
         String response = "value 0x8 is -254";
         int    value    = this.froelingOutputParser.parseValue(response);
 
-        Assert.assertEquals(-254, value, 0);
+        assertThat(value).isEqualTo(-254);
     }
 
     @Test
@@ -144,21 +149,9 @@ public class FroelingOutputParserImplTests
     {
         String response = "Getting value failed, error -993";
 
-        try
-        {
-            this.froelingOutputParser.parseValue(response);
-
-            Assert.fail("should not be here.");
-        }
-        catch (FroelingOutputParserException e)
-        {
-            Assert.assertNotNull(e.getMessage());
-            Assert.assertEquals("Unable to read value: Getting value failed, error -993", e.getMessage());
-        }
-        catch (Exception e)
-        {
-            Assert.fail("should not be here.");
-        }
+        assertThatThrownBy(() -> this.froelingOutputParser.parseValue(response))
+                .isExactlyInstanceOf(FroelingOutputParserException.class)
+                .hasMessage("Unable to read value: Getting value failed, error -993");
     }
 
     private static void compareValueAddress(FroelingValueAddress actual,
@@ -169,18 +162,21 @@ public class FroelingOutputParserImplTests
                                             String other,
                                             String description)
     {
-        Assert.assertNotNull(actual);
-        Assert.assertEquals(expectedNumber, actual.getNumber());
-        Assert.assertEquals(expectedAddress, actual.getAddress());
-        Assert.assertEquals(multiplier, actual.getMultiplier());
-        Assert.assertEquals(unit, actual.getUnit());
-        Assert.assertEquals(other, actual.getOther());
-        Assert.assertEquals(description, actual.getDescription());
+        assertSoftly(softly -> {
+            assertThat(actual.getNumber()).isEqualTo(expectedNumber);
+            assertThat(actual.getAddress()).isEqualTo(expectedAddress);
+            assertThat(actual.getMultiplier()).isEqualTo(multiplier);
+            assertThat(actual.getUnit()).isEqualTo(unit);
+            assertThat(actual.getDescription()).isEqualTo(description);
+        });
     }
 
     private static String readFileFromTestResources(String path) throws IOException
     {
         URL    url            = Thread.currentThread().getContextClassLoader().getResource(path);
+
+        assertThat(url).isNotNull();
+
         byte[] encodedContent = Files.readAllBytes(Paths.get(url.getPath()));
         String content        = new String(encodedContent, StandardCharsets.UTF_8);
 
