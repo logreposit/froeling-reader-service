@@ -132,7 +132,7 @@ public class FroelingOutputParserImplTests
 
         assertThatThrownBy(() -> this.froelingOutputParser.parseValueAddresses(valuesResponse))
                 .isExactlyInstanceOf(FroelingOutputParserException.class)
-                .hasMessage("Unable to parse value addresses");
+                .hasMessage("Unable to parse value addresses.");
     }
 
     @Test

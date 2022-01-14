@@ -13,11 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mockito;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,16 +23,21 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class FroelingClientImplTests
 {
     private FroelingClient froelingClient;
 
-    @MockBean
+    @Mock
     private CommandExecutor commandExecutor;
 
-    @MockBean
+    @Mock
     private FroelingOutputParser froelingOutputParser;
 
     @Captor
@@ -53,17 +55,17 @@ public class FroelingClientImplTests
         String        stdout        = UUID.randomUUID().toString();
         CommandResult commandResult = new CommandResult(0, stdout, "");
 
-        Mockito.when(this.commandExecutor.execute(Mockito.anyList())).thenReturn(commandResult);
+        when(this.commandExecutor.execute(anyList())).thenReturn(commandResult);
 
         FroelingState froelingState = new FroelingState("version", new Date(), new HashMap<>());
 
-        Mockito.when(this.froelingOutputParser.parseState(Mockito.same(stdout))).thenReturn(froelingState);
+        when(this.froelingOutputParser.parseState(same(stdout))).thenReturn(froelingState);
 
         FroelingState retrievedState = this.froelingClient.getState();
 
         assertThat(retrievedState).isSameAs(froelingState);
 
-        Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
+        verify(this.commandExecutor, times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
@@ -73,7 +75,7 @@ public class FroelingClientImplTests
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        Mockito.verify(this.froelingOutputParser, Mockito.times(1)).parseState(stringArgumentCaptor.capture());
+        verify(this.froelingOutputParser, times(1)).parseState(stringArgumentCaptor.capture());
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
@@ -87,27 +89,27 @@ public class FroelingClientImplTests
         String        stdout        = UUID.randomUUID().toString();
         CommandResult commandResult = new CommandResult(0, stdout, "");
 
-        Mockito.when(this.commandExecutor.execute(Mockito.anyList())).thenReturn(commandResult);
+        when(this.commandExecutor.execute(anyList())).thenReturn(commandResult);
 
         List<FroelingError> froelingErrors = new ArrayList<>();
 
-        Mockito.when(this.froelingOutputParser.parseErrors(Mockito.same(stdout))).thenReturn(froelingErrors);
+        when(this.froelingOutputParser.parseErrors(same(stdout))).thenReturn(froelingErrors);
 
         List<FroelingError> retrievedErrors = this.froelingClient.getErrors();
 
         assertThat(retrievedErrors).isSameAs(froelingErrors);
 
-        Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
+        verify(this.commandExecutor, times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
         assertThat(capturedCommandParts).hasSize(2);
         assertThat(capturedCommandParts.get(0)).isEqualTo("p4");
-        assertThat(capturedCommandParts.get(0)).isEqualTo("errors");
+        assertThat(capturedCommandParts.get(1)).isEqualTo("errors");
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        Mockito.verify(this.froelingOutputParser, Mockito.times(1)).parseErrors(stringArgumentCaptor.capture());
+        verify(this.froelingOutputParser, times(1)).parseErrors(stringArgumentCaptor.capture());
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
@@ -121,27 +123,27 @@ public class FroelingClientImplTests
         String        stdout        = UUID.randomUUID().toString();
         CommandResult commandResult = new CommandResult(0, stdout, "");
 
-        Mockito.when(this.commandExecutor.execute(Mockito.anyList())).thenReturn(commandResult);
+        when(this.commandExecutor.execute(anyList())).thenReturn(commandResult);
 
         List<FroelingValueAddress> froelingValueAddresses = new ArrayList<>();
 
-        Mockito.when(this.froelingOutputParser.parseValueAddresses(Mockito.same(stdout))).thenReturn(froelingValueAddresses);
+        when(this.froelingOutputParser.parseValueAddresses(same(stdout))).thenReturn(froelingValueAddresses);
 
         List<FroelingValueAddress> retrievedValueAddresses = this.froelingClient.getValueAddresses();
 
         assertThat(retrievedValueAddresses).isSameAs(froelingValueAddresses);
 
-        Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
+        verify(this.commandExecutor, times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
         assertThat(capturedCommandParts).hasSize(2);
         assertThat(capturedCommandParts.get(0)).isEqualTo("p4");
-        assertThat(capturedCommandParts.get(0)).isEqualTo("values");
+        assertThat(capturedCommandParts.get(1)).isEqualTo("values");
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        Mockito.verify(this.froelingOutputParser, Mockito.times(1)).parseValueAddresses(stringArgumentCaptor.capture());
+        verify(this.froelingOutputParser, times(1)).parseValueAddresses(stringArgumentCaptor.capture());
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
@@ -155,17 +157,17 @@ public class FroelingClientImplTests
         String        stdout        = UUID.randomUUID().toString();
         CommandResult commandResult = new CommandResult(0, stdout, "");
 
-        Mockito.when(this.commandExecutor.execute(Mockito.anyList())).thenReturn(commandResult);
+        when(this.commandExecutor.execute(anyList())).thenReturn(commandResult);
 
         int value = 123;
 
-        Mockito.when(this.froelingOutputParser.parseValue(Mockito.same(stdout))).thenReturn(value);
+        when(this.froelingOutputParser.parseValue(same(stdout))).thenReturn(value);
 
         int retrievedValue = this.froelingClient.getValue("0x000", 1);
 
         assertThat(retrievedValue).isSameAs(value);
 
-        Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
+        verify(this.commandExecutor, times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
@@ -177,7 +179,7 @@ public class FroelingClientImplTests
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        Mockito.verify(this.froelingOutputParser, Mockito.times(1)).parseValue(stringArgumentCaptor.capture());
+        verify(this.froelingOutputParser, times(1)).parseValue(stringArgumentCaptor.capture());
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
@@ -191,17 +193,17 @@ public class FroelingClientImplTests
         String        stdout        = UUID.randomUUID().toString();
         CommandResult commandResult = new CommandResult(0, stdout, "");
 
-        Mockito.when(this.commandExecutor.execute(Mockito.anyList())).thenReturn(commandResult);
+        when(this.commandExecutor.execute(anyList())).thenReturn(commandResult);
 
         int value = 123;
 
-        Mockito.when(this.froelingOutputParser.parseValue(Mockito.same(stdout))).thenReturn(value);
+        when(this.froelingOutputParser.parseValue(same(stdout))).thenReturn(value);
 
         int retrievedValue = this.froelingClient.getValue("0x000", 2);
 
         assertThat(retrievedValue).isEqualTo(value / 2);
 
-        Mockito.verify(this.commandExecutor, Mockito.times(1)).execute(this.commandArgumentCaptor.capture());
+        verify(this.commandExecutor, times(1)).execute(this.commandArgumentCaptor.capture());
 
         List<String> capturedCommandParts = this.commandArgumentCaptor.getValue();
 
@@ -213,7 +215,7 @@ public class FroelingClientImplTests
 
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
 
-        Mockito.verify(this.froelingOutputParser, Mockito.times(1)).parseValue(stringArgumentCaptor.capture());
+        verify(this.froelingOutputParser, times(1)).parseValue(stringArgumentCaptor.capture());
 
         String capturedStdout = stringArgumentCaptor.getValue();
 
