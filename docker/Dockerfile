@@ -8,7 +8,8 @@ RUN apt-get -y update && \
       build-essential \
       cmake \
       pkg-config \
-      default-libmysqlclient-dev \
+      libcap-dev \
+      libmariadb-dev \
       libssl-dev \
       libxml2-dev \
       libcurl4-openssl-dev \
@@ -33,7 +34,7 @@ RUN echo "#!/bin/sh" > /usr/local/bin/systemctl && \
 RUN cd /usr/src && \
     git clone https://github.com/horchi/linux-p4d/ && \
     cd linux-p4d && \
-    git checkout 0.5.16 && \
+    git checkout 0.9.24 && \
     make clean all && \
     make install
 
