@@ -138,7 +138,20 @@ public class FroelingOutputParserImplTests
     @Test
     public void testParseValue() throws FroelingOutputParserException
     {
+        // Older p4 version: tell(eloAlways, "value 0x%x is %d", v.address, v.value);
+
         String response = "value 0x8 is -254";
+        int    value    = this.froelingOutputParser.parseValue(response);
+
+        assertThat(value).isEqualTo(-254);
+    }
+
+    @Test
+    public void testParseValueWithNewerCliVersion() throws FroelingOutputParserException
+    {
+        // Newer p4 version: tell(eloAlways, "value 0x%x is %d / %d", v.address, v.value, (word)v.value);
+
+        String response = "value 0x8 is -254 / 789";
         int    value    = this.froelingOutputParser.parseValue(response);
 
         assertThat(value).isEqualTo(-254);
