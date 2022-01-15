@@ -9,6 +9,8 @@
 
 Description of service, API Documentation and setup along with maintenance instructions
 
+- docker-compose: `mem_limit: 75m`
+
 ## Special thx
 
 Special thanks to [@horchi](https://github.com/horchi) for the awesome [linux-p4d](https://github.com/horchi/linux-p4d) project.
