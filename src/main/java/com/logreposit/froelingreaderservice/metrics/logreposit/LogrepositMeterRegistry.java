@@ -1,11 +1,15 @@
 package com.logreposit.froelingreaderservice.metrics.logreposit;
 
 import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.FunctionCounter;
 import io.micrometer.core.instrument.FunctionTimer;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Measurement;
 import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.DoubleFormat;
@@ -15,7 +19,6 @@ import io.micrometer.core.ipc.http.HttpSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
@@ -27,30 +30,20 @@ import static java.util.stream.Collectors.joining;
 public class LogrepositMeterRegistry extends StepMeterRegistry
 {
     private final LogrepositConfig config;
-    private final HttpSender httpClient;
     private final Logger logger = LoggerFactory.getLogger(LogrepositMeterRegistry.class);
-    private boolean databaseExists = false;
 
     public LogrepositMeterRegistry(LogrepositConfig config, Clock clock, ThreadFactory threadFactory, HttpSender httpClient) {
         super(config, clock);
+
         config().namingConvention(new LogrepositNamingConvention());
         this.config = config;
-        this.httpClient = httpClient;
         start(threadFactory);
     }
 
     @Override
     public void start(ThreadFactory threadFactory) {
         super.start(threadFactory);
-
-        if (config.enabled()) {
-            logger.info("Using Logreposit API with config measurement={} to write metrics", config.measurement());
-        }
     }
-
-//    public static Builder builder(LogrepositConfig config) {
-//        return new Builder(config);
-//    }
 
     private void createDatabaseIfNecessary() {
         // TODO DoM: maybe we need this for for schema creation?
@@ -61,43 +54,21 @@ public class LogrepositMeterRegistry extends StepMeterRegistry
         createDatabaseIfNecessary();
 
         try {
-            String influxEndpoint = "config.apiVersion().writeEndpoint(config)";
-
             for (List<Meter> batch : MeterPartition.partition(this, config.batchSize())) {
-//                HttpSender.Request.Builder requestBuilder = httpClient
-//                        .post(influxEndpoint)
-//                        .withBasicAuthentication("config.username()", "config.password()");
-
                 var plainText = batch.stream()
                                      .flatMap(m -> m.match(
-                                             gauge -> writeGauge(gauge.getId(), gauge.value()),
-                                             counter -> writeCounter(counter.getId(), counter.count()),
+                                             this::writeGauge,
+                                             this::writeCounter,
                                              this::writeTimer,
                                              this::writeSummary,
                                              this::writeLongTaskTimer,
-                                             gauge -> writeGauge(gauge.getId(), gauge.value(getBaseTimeUnit())),
-                                             counter -> writeCounter(counter.getId(), counter.count()),
+                                             this::writeTimeGauge,
+                                             this::writeCounter,
                                              this::writeFunctionTimer,
                                              this::writeMeter))
                                      .collect(joining("\n"));
 
-                logger.info("DoM: Would send the following metrics:\n{}", plainText);
-
-//                requestBuilder
-//                        .withPlainText(plainText)
-//                        .send()
-//                        .onSuccess(response -> {
-//                            logger.debug("successfully sent {} metrics to InfluxDB.", batch.size());
-//                            databaseExists = true;
-//                        })
-//                        .onError(response -> logger.error("failed to send metrics to influx: {}", response.body()));
-
-                if (!config.enabled()) {
-                    throw new MalformedURLException(); // TODO: just to make compiler happy
-                }
-            }
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Malformed InfluxDB publishing endpoint, see '" + config.prefix() + ".uri'", e);
+                logger.info("DoM: Would send the following metrics:\n{}", plainText);}
         } catch (Throwable e) {
             logger.error("failed to send metrics to influx", e);
         }
@@ -130,16 +101,34 @@ public class LogrepositMeterRegistry extends StepMeterRegistry
         return Stream.of(influxLineProtocol(timer.getId(), "long_task_timer", fields));
     }
 
+    Stream<String> writeCounter(FunctionCounter functionCounter) {
+        return writeCounter(functionCounter.getId(), functionCounter.count());
+    }
+
     // VisibleForTesting
-    Stream<String> writeCounter(Meter.Id id, double count) {
+    Stream<String> writeCounter(Counter counter) {
+        return writeCounter(counter.getId(), counter.count());
+    }
+
+    private Stream<String> writeCounter(Meter.Id id, double count) {
         if (Double.isFinite(count)) {
             return Stream.of(influxLineProtocol(id, "counter", Stream.of(new Field("value", count))));
         }
+
         return Stream.empty();
     }
 
     // VisibleForTesting
-    Stream<String> writeGauge(Meter.Id id, Double value) {
+    Stream<String> writeGauge(Gauge gauge) {
+        return writeGauge(gauge.getId(), gauge.value());
+    }
+
+    Stream<String> writeTimeGauge(TimeGauge timeGauge) {
+        return writeGauge(timeGauge.getId(), timeGauge.value(getBaseTimeUnit()));
+    }
+
+    // VisibleForTesting
+    private Stream<String> writeGauge(Meter.Id id, double value) {
         if (Double.isFinite(value)) {
             return Stream.of(influxLineProtocol(id, "gauge", Stream.of(new Field("value", value))));
         }
