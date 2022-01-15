@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ public class FroelingOutputParserImpl implements FroelingOutputParser
     private static final String  STATE_DATE_FORMAT = "EEEE, dd. MMM. yyyy HH:mm:ss";
     private static final String  ERROR_DATE_FORMAT = "EEE MMM dd HH:mm:ss";
 
-    private static final Pattern VALUE_PATTERN         = Pattern.compile("^value (0x[0-9a-f]+) is (\\-?([0-9]+))$");
+    private static final Pattern VALUE_PATTERN         = Pattern.compile("^value (0x[0-9a-f]+) is (\\-?([0-9]+))( / (\\-?([0-9]+)))?$");
     private static final Pattern VALUE_ADDRESS_PATTERN = Pattern.compile("^(\\s+)?([0-9]+)\\)\\s((0x)([0-9a-f]+))\\s+([0-9]+)\\s'(.+)?'\\s\\(([0-9]+)\\)\\s'(.+)'$");
     private static final Pattern ERROR_PATTERN         = Pattern.compile("^(.+):\\s\\s([0-9]+)/([0-9]+)\\s\\s'(.+)' \\- (.+)$");
     private static final Pattern VERSION_PATTERN       = Pattern.compile("^Version: (.+)$");
