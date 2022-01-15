@@ -9,9 +9,11 @@
 
 Description of service, API Documentation and setup along with maintenance instructions
 
+- docker-compose: `mem_limit: 75m`
+
 ## Special thx
 
-Special tanks to [@horchi](https://github.com/horchi) for the awesome [linux-p4d](https://github.com/horchi/linux-p4d) project.
+Special thanks to [@horchi](https://github.com/horchi) for the awesome [linux-p4d](https://github.com/horchi/linux-p4d) project.
 
 I am using his `p4` command-line tool for getting the data from the Lambdatronic S3200 controller.
 

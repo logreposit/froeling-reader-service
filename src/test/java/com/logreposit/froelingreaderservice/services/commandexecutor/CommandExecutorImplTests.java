@@ -1,21 +1,18 @@
 package com.logreposit.froelingreaderservice.services.commandexecutor;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class CommandExecutorImplTests
 {
     private CommandExecutorImpl commandExecutor;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         this.commandExecutor = new CommandExecutorImpl();
@@ -28,9 +25,9 @@ public class CommandExecutorImplTests
 
         CommandResult commandResult = this.commandExecutor.execute(commandParts);
 
-        Assert.assertNotNull(commandResult);
-        Assert.assertEquals(0, commandResult.getExitStatus());
-        Assert.assertTrue(StringUtils.isEmpty(commandResult.getStderr()));
-        Assert.assertFalse(StringUtils.isEmpty(commandResult.getStdout()));
+        assertThat(commandResult).isNotNull();
+        assertThat(commandResult.getExitStatus()).isEqualTo(0L);
+        assertThat(commandResult.getStderr()).isBlank();
+        assertThat(commandResult.getStdout()).isNotBlank();
     }
 }
