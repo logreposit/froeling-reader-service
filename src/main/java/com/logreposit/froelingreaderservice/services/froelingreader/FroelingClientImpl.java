@@ -133,26 +133,26 @@ public class FroelingClientImpl implements FroelingClient
                 throw new FroelingClientException("Error executing command. CommandResult is null.");
             }
 
-            if (commandResult.getExitStatus() != 0)
+            if (commandResult.exitStatus() != 0)
             {
                 logger.error("Command {} exited with exit status {}, stderr: {}, stdout: {}",
                         String.join(" ", commandParts),
-                        commandResult.getExitStatus(),
-                        commandResult.getStderr(),
-                        commandResult.getStdout()
+                        commandResult.exitStatus(),
+                        commandResult.stderr(),
+                        commandResult.stdout()
                 );
 
                 throw new FroelingClientException("Command exited with status != 0");
             }
 
-            if (StringUtils.isEmpty(commandResult.getStdout()))
+            if (StringUtils.isEmpty(commandResult.stdout()))
             {
                 logger.error("Command {} returned empty stdout.", String.join(" ", commandParts));
 
                 throw new FroelingClientException("Command returned empty stdout.");
             }
 
-            return commandResult.getStdout();
+            return commandResult.stdout();
         }
         catch (CommandExecutorException e)
         {
