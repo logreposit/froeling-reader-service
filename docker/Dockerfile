@@ -15,12 +15,13 @@ RUN apt-get -y update && \
       libcurl4-openssl-dev \
       uuid-dev \
       libjansson-dev \
-      libssl-dev
+      libssl-dev \
+      liblua5.3-dev
 
 RUN cd /usr/src && \
-    git clone https://libwebsockets.org/repo/libwebsockets && \
+    git clone https://github.com/warmcat/libwebsockets.git && \
     cd libwebsockets && \
-    git checkout v4.1-stable && \
+    git checkout v4.3.3 && \
     mkdir build && \
     cd build && \
     cmake .. && \
