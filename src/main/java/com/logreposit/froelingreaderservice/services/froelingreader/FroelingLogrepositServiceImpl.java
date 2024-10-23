@@ -1,8 +1,9 @@
 package com.logreposit.froelingreaderservice.services.froelingreader;
 
-import com.logreposit.froelingreaderservice.communication.http.logrepositapi.LogrepositApiClient;
 import com.logreposit.froelingreaderservice.services.froelingreader.exceptions.FroelingLogrepositServiceException;
 import com.logreposit.froelingreaderservice.services.froelingreader.models.FroelingS3200LogData;
+import com.logreposit.froelingreaderservice.services.logreposit.LogrepositApiService;
+import com.logreposit.froelingreaderservice.services.logreposit.LogrepositIngressDataMapper;
 import com.logreposit.froelingreaderservice.utils.LoggingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +18,16 @@ public class FroelingLogrepositServiceImpl implements FroelingLogrepositService
     private static final Logger logger = LoggerFactory.getLogger(FroelingLogrepositServiceImpl.class);
 
     private final FroelingReader      froelingReader;
-    private final LogrepositApiClient logrepositApiClient;
+    private final LogrepositIngressDataMapper ingressDataMapper;
+    private final LogrepositApiService logrepositApiService;
 
     public FroelingLogrepositServiceImpl(FroelingReader      froelingReader,
-                                         LogrepositApiClient logrepositApiClient)
+                                         LogrepositIngressDataMapper ingressDataMapper,
+                                         LogrepositApiService logrepositApiService)
     {
         this.froelingReader      = froelingReader;
-        this.logrepositApiClient = logrepositApiClient;
+        this.ingressDataMapper = ingressDataMapper;
+        this.logrepositApiService = logrepositApiService;
     }
 
     @Override
@@ -38,7 +42,9 @@ public class FroelingLogrepositServiceImpl implements FroelingLogrepositService
 
         logger.info("Finished collecting and converting log values. Operation took {} seconds.", logFetchDuration);
 
-        this.publishData(froelingS3200LogData);
+        final var ingressData = ingressDataMapper.toLogrepositIngressData(froelingS3200LogData);
+
+        logrepositApiService.pushData(ingressData);
     }
 
     private FroelingS3200LogData collectLogData() throws FroelingLogrepositServiceException
@@ -54,19 +60,6 @@ public class FroelingLogrepositServiceImpl implements FroelingLogrepositService
             logger.error("Caught Exception while reading Data from Froeling Lambdatronic S3200: {}", LoggingUtils.getLogForException(e));
 
             throw new FroelingLogrepositServiceException("Caught Exception while reading Data from Froeling Lambdatronic S3200", e);
-        }
-    }
-
-    private void publishData(FroelingS3200LogData froelingS3200LogData) throws FroelingLogrepositServiceException
-    {
-        try
-        {
-            this.logrepositApiClient.publishData(froelingS3200LogData);
-        }
-        catch (Exception e)
-        {
-            logger.error("Unable to publish froelingS3200LogData: {}", LoggingUtils.getLogForException(e));
-            throw new FroelingLogrepositServiceException("Unable to publish froelingS3200LogData", e);
         }
     }
 }
