@@ -34,7 +34,7 @@ RUN echo "#!/bin/sh" > /usr/local/bin/systemctl && \
 RUN cd /usr/src && \
     git clone https://github.com/horchi/linux-p4d/ && \
     cd linux-p4d && \
-    git checkout 0.9.24 && \
+    git checkout 0.10.2 && \
     make clean all && \
     make install
 
