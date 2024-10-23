@@ -1,7 +1,7 @@
 froelingreaderservice:
   device-timezone: "Europe/Vienna" # Java TimeZone
   collect-interval: 60000
-  api-base-url: "https://api.logreposit.com/v1/"
+  api-base-url: "https://api.logreposit.com"
   api-client-retry-count: 5
   api-client-retry-initial-back-off-interval: 1200
   api-client-retry-back-off-multiplier: 1.5
