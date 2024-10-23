@@ -2,9 +2,8 @@ version: 2.1
 
 
 orbs:
-  maven: circleci/maven@1.2.0
-  codecov: codecov/codecov@3.2.2
-
+  maven: circleci/maven@1.4.1
+  codecov: codecov/codecov@5.0.0
 
 executors:
   build-container:
@@ -13,7 +12,6 @@ executors:
       TZ: "Europe/Vienna"
     docker:
       - image: cimg/openjdk:17.0
-
 
 jobs:
   compile:
