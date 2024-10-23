@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:21-jre
 
 MAINTAINER Dominic Miglar <dominic.miglar@netunix.at>
 
@@ -15,12 +15,13 @@ RUN apt-get -y update && \
       libcurl4-openssl-dev \
       uuid-dev \
       libjansson-dev \
-      libssl-dev
+      libssl-dev \
+      liblua5.3-dev
 
 RUN cd /usr/src && \
-    git clone https://libwebsockets.org/repo/libwebsockets && \
+    git clone https://github.com/warmcat/libwebsockets.git && \
     cd libwebsockets && \
-    git checkout v4.1-stable && \
+    git checkout v4.3.3 && \
     mkdir build && \
     cd build && \
     cmake .. && \
@@ -34,7 +35,7 @@ RUN echo "#!/bin/sh" > /usr/local/bin/systemctl && \
 RUN cd /usr/src && \
     git clone https://github.com/horchi/linux-p4d/ && \
     cd linux-p4d && \
-    git checkout 0.9.24 && \
+    git checkout 0.10.2 && \
     make clean all && \
     make install
 

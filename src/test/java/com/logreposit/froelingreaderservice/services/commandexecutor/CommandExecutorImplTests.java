@@ -26,8 +26,8 @@ public class CommandExecutorImplTests
         CommandResult commandResult = this.commandExecutor.execute(commandParts);
 
         assertThat(commandResult).isNotNull();
-        assertThat(commandResult.getExitStatus()).isEqualTo(0L);
-        assertThat(commandResult.getStderr()).isBlank();
-        assertThat(commandResult.getStdout()).isNotBlank();
+        assertThat(commandResult.exitStatus()).isEqualTo(0L);
+        assertThat(commandResult.stderr()).isBlank();
+        assertThat(commandResult.stdout()).isNotBlank();
     }
 }
